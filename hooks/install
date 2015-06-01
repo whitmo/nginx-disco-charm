@@ -1,0 +1,44 @@
+#!/bin/bash
+set -e
+
+readonly CONFD_VERSION=0.9.0
+readonly CONFD_URL=https://github.com/kelseyhightower/confd/releases/download/v${CONFD_VERSION}/confd-${CONFD_VERSION}-linux-amd64
+readonly CONFD_SHA1=2c4e706af253c31f99a11005eae5a7349b6062b3
+
+checksum() {
+    local hash=$(openssl sha1 $1)
+    if [ "SHA1(${1})= $2" = "${hash}" ]; then
+        return 0
+    else
+        echo "Bad checksum"
+        return 1
+    fi
+}
+
+apt-get install -y \
+    python-dev \
+    python-pip \
+    git \
+
+
+easy_install -U pip # hackaround
+pip install --src=/opt/python-src -r hooks/python-pkgs.txt
+
+# ensure docker is here
+source $CHARM_DIR/hooks/install-docker.sh
+if command_exists docker && [ -e /var/run/docker.sock ]; then
+    (
+	set -x
+	$sh_c 'docker version'
+    ) || true
+else
+    docker_install
+fi
+
+docker pull nginx
+
+# set up confd
+mkdir -p /opt/src
+wget -O /tmp/confd ${CONFD_URL}
+checksum /tmp/confd $CONFD_SHA1
+cp /tmp/confd /usr/local/bin/confd

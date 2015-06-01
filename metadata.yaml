@@ -1,0 +1,11 @@
+---
+name: nginx-disco
+summary: http service disco
+description: |
+  dance proxy dance
+provides:
+  website:
+    interface: http
+requires:
+  etcd-api:
+    interface: etcd

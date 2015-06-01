@@ -1,0 +1,31 @@
+---
+- hosts: all
+  handlers:
+    - name: placeholder
+      debug: msg="HELLO"
+  tasks:
+    - name: consul api changed
+      include: consul-api-changed.yml
+      tags:
+        - consul-api-relation-changed
+
+    - name: etcd api changed
+      include: etcd-api-changed.yml
+      tags:
+        - etcd-api-relation-changed
+
+    - name: upgrade or install
+      include: install-or-upgrade.yml
+      tags:
+        - upgrade-charm
+        - install
+
+    - name: config changed
+      include: config-changed.yml
+      tags:
+        - config-changed
+
+    - name: stop
+      include: stop.yml
+      tags:
+        - stop

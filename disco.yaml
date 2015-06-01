@@ -1,0 +1,40 @@
+disco-etcd:
+  series: trusty
+  services:
+    nginx:
+      charm: "local:trusty/nginx-disco"
+      to: docker
+    "flannel-docker":
+      charm: "local:trusty/flannel-docker"
+    etcd:
+      charm: "local:trusty/etcd"
+      num_units: 3
+      to: [0, docker, docker]
+    registrator:
+      charm: "local:trusty/registrator"
+    docker:
+      charm: "local:trusty/docker"
+      num_units: 2
+      options:
+        latest: true
+    heka-sub:
+      charm: "local:trusty/heka-sub"
+      options:
+        juju_agent: true
+    heka-hub:
+      charm: "local:trusty/heka-hub"
+      num_units: 1
+      to: 0
+      options:
+        rstout: true
+        jujud_logs: true
+        juju_agent: true
+  relations:
+    - ["heka-sub:docker_logging", "docker:logging"]
+    - ["heka-sub:heka_out", "heka-hub:heka_in"]
+    - ["heka-sub:heka_out", "heka-hub:heka_in"]
+    - ["registrator", "docker"]
+    - ["registrator:etcd-api", "etcd:client"]
+    - ["flannel-docker:network", "docker:network"]
+    - ["flannel-docker:docker-host", "nginx:juju-info"]
+    - ["nginx:etcd", "etcd:client"]
