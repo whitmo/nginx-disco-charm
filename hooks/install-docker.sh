@@ -1,3 +1,7 @@
+# Adapted from get.docker.com
+# installs latest docker from ppa
+# does not exit
+
 export DEBIAN_FRONTEND=noninteractive
 
 sh_c='sh -c'
@@ -94,5 +98,4 @@ docker_install (){
         ) || true
     fi
     echo_docker_as_nonroot
-    exit 0
 }
