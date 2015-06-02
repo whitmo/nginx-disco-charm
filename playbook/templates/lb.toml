@@ -1,0 +1,9 @@
+[template]
+src = "lb.conf.tmpl"
+dest = "/tmp/myconfig.conf"
+keys = [
+    "/myapp/database/url",
+    "/myapp/database/user",
+]
+check_command = "docker run --rm nginx /usr/sbin/nginx -t -c"
+reload_command = "docker kill -s HUP {{nginx_container_name}}"
