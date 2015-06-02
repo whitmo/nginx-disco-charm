@@ -40,7 +40,7 @@ docker pull nginx
 # set up confd
 mkdir -p /opt/src
 wget -O /tmp/confd-${CONFD_VERSION} ${CONFD_URL}
-checksum /tmp/confd $CONFD_SHA1
+checksum /tmp/confd-${CONFD_VERSION} ${CONFD_SHA1}
 cp /tmp/confd-${CONFD_VERSION} /usr/local/bin/confd
 chmod +x /usr/local/bin/confd
 mkdir -p /etc/confd/{conf.d,templates}
